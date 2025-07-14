@@ -13,6 +13,7 @@ A comprehensive REST API for weather data with MongoDB caching, built using Clea
 - **Production-Ready**: Error handling, logging and validation
 
 ## 🏗️ Architecture
+```
 WeatherService/
 ├── Controllers/           # API endpoints (Presentation Layer)
 ├── Application/           # Use cases and handlers (Application Layer)
@@ -29,6 +30,7 @@ WeatherService/
 │   ├── Repositories/      # Data access implementations
 │   └── Services/          # External service integrations
 └── Tests/                 # Comprehensive test suite
+```
 
 ## 🚀 Quick Start
 
@@ -42,10 +44,9 @@ WeatherService/
 ### Installation
 
 1. **Clone the repository**
-git clone <repository-url> cd WeatherService
+    ```git clone <repository-url> cd WeatherService```
 
-
-2. **Install MongoDB**
+3. **Install MongoDB**
    - Download and install MongoDB Community Edition
    - Start MongoDB service:
      ```bash
@@ -59,16 +60,16 @@ git clone <repository-url> cd WeatherService
      sudo systemctl start mongod
      ```
 
-3. **Restore NuGet packages**
- dotnet restore
+4. **Restore NuGet packages**
+    ```dotnet restore```
 
-4. **Build the solution**
-dotnet build
+5. **Build the solution**
+   ```dotnet build```
 
-5. **Run the application**
-cd WeatherService dotnet run
+6. **Run the application**
+   ```cd WeatherService dotnet run```
 
-6. **Access the API**
+7. **Access the API**
    - Swagger UI: `https://localhost:7053/swagger`
    - Health Check: `https://localhost:7053/health`
 
@@ -81,11 +82,13 @@ GET /api/weather/coordinates?latitude={lat}&longitude={lon}
 
 **Example:**
 curl "https://localhost:7053/api/weather/coordinates?latitude=51.5074&longitude=-0.1278"
+
 **Response:**
 { "temperature": 20.5, "windDirection": 180.0, "windSpeed": 10.5, "sunriseDateTime": "2024-01-15T06:30:00Z", "source": "external" }
 
 #### Get Weather by City
 GET /api/weather/city?city={cityName}
+
 **Example:**
 curl "https://localhost:7053/api/weather/city?city=london"
 
@@ -126,6 +129,7 @@ dotnet test --collect:"XPlat Code Coverage"
 - **Infrastructure Tests**: Repository and external service integrations
 
 ### Test Structure
+```
 WeatherService.Tests/
 ├── Domain/
 │   ├── Entities/
@@ -136,6 +140,7 @@ WeatherService.Tests/
 │   └── Services/
 ├── Controllers/
 └── Integration/
+```
 
 ## 🏛️ Clean Architecture Patterns
 
@@ -212,11 +217,12 @@ The application implements intelligent caching:
 ### Docker (Optional)
 
 Create a `Dockerfile`:
-ROM mcr.microsoft.com/dotnet/aspnet:6.0 AS base WORKDIR /app EXPOSE 80 EXPOSE 443
+```
+FROM mcr.microsoft.com/dotnet/aspnet:6.0 AS base WORKDIR /app EXPOSE 80 EXPOSE 443
 FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build WORKDIR /src COPY ["WeatherService/WeatherService.csproj", "WeatherService/"] RUN dotnet restore "WeatherService/WeatherService.csproj" COPY . . WORKDIR "/src/WeatherService" RUN dotnet build "WeatherService.csproj" -c Release -o /app/build
 FROM build AS publish RUN dotnet publish "WeatherService.csproj" -c Release -o /app/publish
 FROM base AS final WORKDIR /app COPY --from=publish /app/publish . ENTRYPOINT ["dotnet", "WeatherService.dll"]
-
+```
 ### Production Checklist
 - [ ] Configure HTTPS certificates
 - [ ] Set up MongoDB replica set
