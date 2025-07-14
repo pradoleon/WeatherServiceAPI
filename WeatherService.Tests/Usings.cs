@@ -1,0 +1,10 @@
+global using Xunit;
+global using Moq;
+global using FluentAssertions;
+global using AutoFixture;
+global using Microsoft.Extensions.Logging;
+global using System;
+global using System.Threading.Tasks;
+global using WeatherService.Domain.Entities;
+global using WeatherService.Domain.ValueObjects;
+global using WeatherService.Application.DTOs;
