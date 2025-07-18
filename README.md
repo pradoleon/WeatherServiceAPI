@@ -43,26 +43,7 @@ WeatherService/
 - [Docker](https://www.docker.com/) (optional)
 
 ### Installation
-### 🔧 Running with Docker
-
-```bash
-# Clone the repository
-git clone https://github.com/pradoleon/WeatherServiceAPI.git
-cd weather-service-api
-
-# Build and run the containers
-docker-compose up --build
-```
-
-This will spin up:
-- A container for the Weather Service API
-- A MongoDB container with default credentials (`root` / `example`)
-
-Access the API at
-•	Swagger UI: http://localhost:7053/swagger
-•	MongoDB: http://localhost:27017 (via MongoDB client)
-
-### 💻 Running Locally without Docker
+### 💻 Running Locally
 1. **Clone the repository**
     ```git clone https://github.com/pradoleon/WeatherServiceAPI.git cd WeatherService```
 
@@ -99,28 +80,47 @@ Access the API at
 7. **Access the API**
    - Swagger UI: `https://localhost:7053/swagger`
    - Health Check: `https://localhost:7053/health`
+   
+### 🔧 Running with Docker
+
+```bash
+# Clone the repository
+git clone https://github.com/pradoleon/WeatherServiceAPI.git
+cd weather-service-api
+
+# Build and run the containers
+docker-compose up --build
+```
+
+This will spin up:
+- A container for the Weather Service API
+- A MongoDB container with default credentials (`root` / `example`)
+
+**Access the API**
+   - Swagger UI: http://localhost:7053/swagger
+   - MongoDB: http://localhost:27017 (via MongoDB client)
 
 ## 📝 API Endpoints
 
 ### Weather Data
 
 #### Get Weather by Coordinates
-GET /api/weather/coordinates?latitude={lat}&longitude={lon}
+`GET /api/weather/coordinates?latitude={lat}&longitude={lon}`
 
 **Example:**
-curl "https://localhost:7053/api/weather/coordinates?latitude=51.5074&longitude=-0.1278"
+`curl "https://localhost:7053/api/weather/coordinates?latitude=51.5074&longitude=-0.1278"`
 
 **Response:**
-{ "temperature": 20.5, "windDirection": 180.0, "windSpeed": 10.5, "sunriseDateTime": "2024-01-15T06:30:00Z", "source": "external" }
+`{ "temperature": 20.5, "windDirection": 180.0, "windSpeed": 10.5, "sunriseDateTime": "2024-01-15T06:30:00Z", "source": "external" }`
 
 #### Get Weather by City
-GET /api/weather/city?city={cityName}
+`GET /api/weather/city?city={cityName}`
 
 **Example:**
-curl "https://localhost:7053/api/weather/city?city=london"
+`curl "https://localhost:7053/api/weather/city?city=london"`
 
 #### Get Supported Cities
-GET /api/weather/supported-cities
+`GET /api/weather/supported-cities`
 
 **Supported Cities:**
 - london, paris, tokyo, new york, madrid, berlin, rome, sydney, moscow, beijing, mumbai, cairo, buenos aires, toronto, amsterdam
@@ -128,26 +128,50 @@ GET /api/weather/supported-cities
 ### System Endpoints
 
 #### Health Check
-GET /health
+`GET /health`
 
 ## 🔧 Configuration
 
 ### Application Settings
 
 Update `appsettings.json` or use environment variables:
-{ "ConnectionStrings": { "MongoDB": "mongodb://localhost:27017" }, "Database": { "Name": "WeatherServiceDb" }, "ExternalApis": { "OpenMeteo": { "BaseUrl": "https://api.open-meteo.com/v1" } } }
+`{ "ConnectionStrings": { "MongoDB": "mongodb://localhost:27017" }, "Database": { "Name": "WeatherServiceDb" }, "ExternalApis": { "OpenMeteo": { "BaseUrl": "https://api.open-meteo.com/v1" } } }`
 
 ### Environment Variables
 
 For production, use environment variables:
-ASPNETCORE_ENVIRONMENT=Production ConnectionStrings__MongoDB=mongodb://your-mongo-server:27017 Database__Name=WeatherServiceProd
+`ASPNETCORE_ENVIRONMENT=Production ConnectionStrings__MongoDB=mongodb://your-mongo-server:27017 Database__Name=WeatherServiceProd`
 
 ## 🧪 Testing
 
 ### Run All Tests
-dotnet test
+`dotnet test`
 ### Run with Coverage
+`dotnet test --collect:"XPlat Code Coverage"`
+### ✅ Code Coverage Report with ReportGenerator
+You can generate a detailed HTML coverage report for your tests using .NET CLI and [ReportGenerator](https://github.com/danielpalme/ReportGenerator).
+#### 🔍 Step 1: Run Tests with Coverage Enabled
+```bash
 dotnet test --collect:"XPlat Code Coverage"
+```
+> This will produce a `coverage.cobertura.xml` file under the `TestResults/{guid}` folder of your test project.
+#### 🔍 Step 2: Install ReportGenerator (if not already installed)
+```bash
+dotnet tool install -g dotnet-reportgenerator-globaltool
+```
+#### 📊 Step 3: Generate HTML Coverage Report
+Update the path to match your generated GUID and project structure:
+```bash
+reportgenerator -reports:"Path\To\TestProject\TestResults\{guid}\coverage.cobertura.xml" -targetdir:"coveragereport" -reporttypes:Html
+```
+Example (adjust to your local path):
+```bash
+reportgenerator -reports:"C:\Users\pradoleon\source\repos\WeatherService\WeatherService.Tests\TestResults\b8f3cb83-157e-4ded-91a6-5e50f6a66cdb\coverage.cobertura.xml" -targetdir:"coveragereport" -reporttypes:Html
+```
+#### 📂 Output
+The HTML report will be generated in the `coveragereport` folder. You can open the `index.html` file in your browser to explore test coverage.
+---
+**Tip:** To avoid manually copying the path every time, you can script this step into a `.ps1` or `.sh` file depending on your OS.
 
 ### Test Categories
 

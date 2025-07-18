@@ -1,9 +1,8 @@
-using MediatR;
 using MongoDB.Driver;
+using System.Reflection;
 using WeatherService.Application.Handlers;
 using WeatherService.Domain.Repositories;
 using WeatherService.Domain.Services;
-using System.Reflection;
 using WeatherService.Infraestructure.Repositories;
 using WeatherService.Infraestructure.Services;
 
@@ -67,7 +66,6 @@ builder.Services.AddHttpClient<IExternalWeatherService, OpenMeteoService>();
 
 // Register repositories and services
 builder.Services.AddScoped<IWeatherRepository, WeatherRepository>();
-builder.Services.AddScoped<IExternalWeatherService, OpenMeteoService>();
 builder.Services.AddScoped<ICityCoordinateService, CityCoordinateService>();
 
 // Configure logging
