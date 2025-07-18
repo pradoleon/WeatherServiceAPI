@@ -37,14 +37,34 @@ WeatherService/
 ### Prerequisites
 
 - [.NET 6 SDK](https://dotnet.microsoft.com/download/dotnet/6.0)
-- [MongoDB](https://www.mongodb.com/try/download/community) (running locally)
+- [MongoDB](https://www.mongodb.com/try/download/community) (local or Docker)
 - [Visual Studio 2022](https://visualstudio.microsoft.com/) or [VS Code](https://code.visualstudio.com/)
 - [Git](https://git-scm.com/)
+- [Docker](https://www.docker.com/) (optional)
 
 ### Installation
+### 🔧 Running with Docker
 
+```bash
+# Clone the repository
+git clone https://github.com/pradoleon/WeatherServiceAPI.git
+cd weather-service-api
+
+# Build and run the containers
+docker-compose up --build
+```
+
+This will spin up:
+- A container for the Weather Service API
+- A MongoDB container with default credentials (`root` / `example`)
+
+Access the API at
+•	Swagger UI: http://localhost:7053/swagger
+•	MongoDB: http://localhost:27017 (via MongoDB client)
+
+### 💻 Running Locally without Docker
 1. **Clone the repository**
-    ```git clone <repository-url> cd WeatherService```
+    ```git clone https://github.com/pradoleon/WeatherServiceAPI.git cd WeatherService```
 
 3. **Install MongoDB**
    - Download and install MongoDB Community Edition
@@ -59,7 +79,14 @@ WeatherService/
      # Linux (systemd)
      sudo systemctl start mongod
      ```
-
+   - Create a MongoDB instance locally or use MongoDB Atlas.
+   - Update `appsettings.json` with your MongoDB connection string.
+   ```bash
+	"ConnectionStrings": {
+		"MongoDB": "mongodb://localhost:27017" // Local MongoDB connection string
+	}
+    ```
+3. Run the application:
 4. **Restore NuGet packages**
     ```dotnet restore```
 
@@ -188,8 +215,6 @@ The application implements intelligent caching:
 
 ### Health Checks
 - **Endpoint**: `/health`
-- **MongoDB**: Connection health
-- **External APIs**: Service availability
 
 ### Metrics
 - API response times
@@ -211,26 +236,6 @@ The application implements intelligent caching:
 ### Rate Limiting
 - Consider implementing rate limiting for production
 - MongoDB TTL indexes for automatic cleanup
-
-## 🚀 Deployment
-
-### Docker (Optional)
-
-Create a `Dockerfile`:
-```
-FROM mcr.microsoft.com/dotnet/aspnet:6.0 AS base WORKDIR /app EXPOSE 80 EXPOSE 443
-FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build WORKDIR /src COPY ["WeatherService/WeatherService.csproj", "WeatherService/"] RUN dotnet restore "WeatherService/WeatherService.csproj" COPY . . WORKDIR "/src/WeatherService" RUN dotnet build "WeatherService.csproj" -c Release -o /app/build
-FROM build AS publish RUN dotnet publish "WeatherService.csproj" -c Release -o /app/publish
-FROM base AS final WORKDIR /app COPY --from=publish /app/publish . ENTRYPOINT ["dotnet", "WeatherService.dll"]
-```
-### Production Checklist
-- [ ] Configure HTTPS certificates
-- [ ] Set up MongoDB replica set
-- [ ] Configure logging aggregation
-- [ ] Set up monitoring and alerting
-- [ ] Implement rate limiting
-- [ ] Configure CORS policies
-- [ ] Set up CI/CD pipeline
 
 ## 📚 Learning Objectives
 
@@ -259,6 +264,11 @@ This project demonstrates:
 - **Logging**: Structured logging with context
 - **Validation**: Input validation and sanitization
 - **Documentation**: OpenAPI/Swagger documentation
+
+### Containerization & Deployment
+- **Docker Support**: Containerized API and MongoDB for consistent environments
+- **Docker Compose**: Simplified orchestration of multi-container setups
+- **Environment Configuration**: Use of environment variables and volume mappings
 
 ## 🤝 Contributing
 

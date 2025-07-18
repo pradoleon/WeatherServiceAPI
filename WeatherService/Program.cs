@@ -18,15 +18,16 @@ builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(typeof(GetWe
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(c =>
 {
-    c.SwaggerDoc("v1", new()
+    var swaggerConfig = builder.Configuration.GetSection("Swagger");
+    c.SwaggerDoc(swaggerConfig["Version"], new()
     {
-        Title = "Weather Service API",
-        Version = "v1",
-        Description = "A REST API for weather data with MongoDB caching using Clean Architecture and CQRS",
+        Title = swaggerConfig["Title"],
+        Version = swaggerConfig["Version"],
+        Description = swaggerConfig["Description"],
         Contact = new()
         {
-            Name = "Leonardo Prado",
-            Email = "pradoleong@gmail.com"
+            Name = swaggerConfig.GetSection("Contact")["Name"],
+            Email = swaggerConfig.GetSection("Contact")["Email"]
         }
     });
 
@@ -64,7 +65,7 @@ builder.Services.AddSingleton<IMongoDatabase>(serviceProvider =>
 // HTTP Client for external API calls
 builder.Services.AddHttpClient<IExternalWeatherService, OpenMeteoService>();
 
-// Register repositories and services (moved to Infrastructure layer)
+// Register repositories and services
 builder.Services.AddScoped<IWeatherRepository, WeatherRepository>();
 builder.Services.AddScoped<IExternalWeatherService, OpenMeteoService>();
 builder.Services.AddScoped<ICityCoordinateService, CityCoordinateService>();
@@ -83,8 +84,9 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI(c =>
     {
-        c.SwaggerEndpoint("/swagger/v1/swagger.json", "Weather Service API v1");
-        c.RoutePrefix = "swagger";
+        var swaggerConfig = builder.Configuration.GetSection("Swagger");
+        c.SwaggerEndpoint(swaggerConfig["Endpoint"], $"{swaggerConfig["Title"]} {swaggerConfig["Version"]}");
+        c.RoutePrefix = swaggerConfig["RoutePrefix"];
         c.DisplayRequestDuration();
     });
 }
